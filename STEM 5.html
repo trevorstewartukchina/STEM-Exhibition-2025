@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLS STEM EXHIBITION: BEYOND THE HORIZON</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --science: #39FF14; --tech: #00F3FF; --eng: #FF9D00; --math: #FFFF33;
+            --uoi: #FF00FF; --bg-dark: #010103;
+        }
+
+        body, html {
+            margin: 0; padding: 0; background-color: var(--bg-dark);
+            color: #e0e0e0; font-family: 'Rajdhani', sans-serif; overflow-x: hidden;
+        }
+
+        /* --- 矩阵代码雨引擎 --- */
+        #matrix-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; opacity: 0.65;
+        }
+
+        /* --- 页眉与 Logo --- */
+        .header {
+            display: flex; flex-direction: column; align-items: center;
+            padding: 40px 15px; background: rgba(0, 0, 0, 0.9);
+            border-bottom: 4px solid var(--tech); backdrop-filter: blur(15px);
+        }
+
+        .cls-logo {
+            height: 100px; margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px var(--tech));
+        }
+
+        .title-block h1 {
+            font-family: 'Orbitron', sans-serif; font-size: 2.8rem;
+            margin: 0; letter-spacing: 8px; color: var(--tech);
+            text-shadow: 0 0 20px var(--tech); text-align: center;
+        }
+
+        .container { width: 94%; max-width: 1400px; margin: 0 auto; padding: 20px 0; }
+
+        /* --- 板块标题 --- */
+        .sector-header {
+            margin: 50px 0 25px 0; padding: 20px;
+            background: rgba(255, 255, 255, 0.05); border-left: 10px solid;
+            border-radius: 0 20px 20px 0; backdrop-filter: blur(10px);
+        }
+        .sector-header h2 { font-size: 1.8rem; margin: 0; font-family: 'Orbitron'; }
+        .sci-h { border-color: var(--science); color: var(--science); }
+        .tec-h { border-color: var(--tech); color: var(--tech); }
+        .eng-h { border-color: var(--eng); color: var(--eng); }
+        .mat-h { border-color: var(--math); color: var(--math); }
+
+        /* --- 卡片布局 --- */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .card { height: 400px; perspective: 1200px; cursor: pointer; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .card:hover .card-inner, .card.active .card-inner { transform: rotateY(180deg); }
+
+        .card-front, .card-back {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; border-radius: 25px;
+            padding: 30px; box-sizing: border-box;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(10, 10, 30, 0.9); backdrop-filter: blur(20px);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+
+        .card-back { transform: rotateY(180deg); align-items: flex-start; text-align: left; background: rgba(0, 0, 0, 0.95); }
+        
+        .icon { font-size: 4.5rem; margin-bottom: 20px; }
+        .card-front h3 { font-family: 'Orbitron'; font-size: 1.5rem; margin: 5px 0; text-align: center; color: #fff; }
+        .lang-cn { font-size: 1.1rem; color: #aaa; margin-top: 5px; }
+
+        .card-back h4 { color: var(--tech); font-family: 'Orbitron'; border-bottom: 1px solid #444; width: 100%; margin-bottom: 15px; padding-bottom: 10px; font-size: 1.2rem; }
+        .info-group h5 { margin: 0; color: #fff; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
+        .info-group p { font-size: 1rem; line-height: 1.5; color: #ddd; margin: 8px 0; }
+        .cn-text { font-size: 0.9rem; color: #888; display: block; margin-top: 8px; border-top: 1px solid #222; padding-top: 8px; }
+
+        /* --- 手机端适配 --- */
+        @media (max-width: 600px) {
+            .title-block h1 { font-size: 1.8rem; letter-spacing: 4px; }
+            .cls-logo { height: 80px; }
+            .footer-date { font-size: 2.8rem !important; }
+            .sector-header h2 { font-size: 1.3rem; }
+        }
+
+        .uoi-panel {
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 243, 255, 0.1));
+            border: 2px solid var(--uoi); border-radius: 30px;
+            padding: 50px 30px; text-align: center; margin: 80px 0;
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.2);
+        }
+
+        footer { padding: 80px 0; text-align: center; background: #000; border-top: 1px solid #222; }
+        .footer-date { font-family: 'Orbitron'; font-size: 4rem; color: var(--tech); text-shadow: 0 0 20px var(--tech); }
+    </style>
+</head>
+<body>
+
+    <canvas id="matrix-canvas"></canvas>
+
+    <header class="header">
+        <img src="C:\Users\trevo\Desktop\Logos\CLS Logo 2.png" class="cls-logo" alt="CLS Logo">
+        <div class="title-block">
+            <h1>BEYOND THE HORIZON</h1>
+            <p style="letter-spacing: 3px; color: #888; margin-top: 10px;">Where Inquiry Meets Innovation / 探究与创新的碰撞</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <section>
+            <div class="sector-header sci-h"><h2>🔬 SCIENCE SECTOR / 科学区</h2></div>
+            <div class="card-grid">
+                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                    <div class="card-front"><div class="icon">🪐</div><h3>Space Expo</h3><div class="lang-cn">中学太空展</div></div>
+                    <div class="card-back"><h4>Astronomy</h4><div class="info-group"><h5>Inquiry / 探究</h5><p>Journey into human habitats and life-support systems for the stars. <span class="cn-text">探究人在太空中生存所需的居住舱、供氧系统和食物循环。</span></p></div></div>
+                </div></div>
+                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                    <div class="card-front"><div class="icon">🌋</div><h3>Geological Power</h3><div class="lang-cn">火山模型</div></div>
+                    <div class="card-back"><h4>Chemistry</h4><div class="info-group"><h5>Inquiry / 探究</h5><p>Experience the chemical force of volcanic eruptions through reactive modeling. <span class="cn-text">展示化学反应如何模拟火山爆发，理解其与地质活动的联系。</span></p></div></div>
+                </div></div>
+                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                    <div class="card-front"><div class="icon">🔬</div><h3>The Micro-Verse</h3><div class="lang-cn">显微镜观察</div></div>
+                    <div class="card-back"><h4>Biology</h4><div class="info-group"><h5>Inquiry / 探究</h5><p>Peer through high-powered lenses to see structures invisible to the naked eye. <span class="cn-text">探索微观结构，发现肉眼看不见的奥秘。</span></p></div></div>
+                </div></div>
+                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                    <div class="card-front"><div class="icon">🌵</div><h3>Sustainable Survival</h3><div class="lang-cn">沙漠小镇模型</div></div>
+                    <div class="card-back"><h4>Environment</h4><div class="info-group"><h5>Inquiry / 探究</h5><p>Discover how science powers desert communities in extreme climates. <span class="cn-text">研究社区如何在极端沙漠环境中通过科学手段实现可持续生活。</span></p></div></div>
+                </div></div>
+            </div>
+        </section>
+
+        <section>
+            <div class="sector-header tec-h"><h2>💻 TECHNOLOGY SECTOR / 技术区</h2></div>
+            <div class="card-grid">
+                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                    <div class="card-front"><div class="icon">🤖</div><h3>AI & Robotics</h3><div class="lang-cn">人工智能机器人</div></div>
+                    <div class="card-back"><h4>Future Tech</h4><div class="info-group"><h5>Inquiry / 探究</h5><p>Interact with robotic dogs, autonomous miners, and smart claw machines. <span class="cn-text">与机器狗、星际矿工及智能抓取设备进行互动。</span></p></div></div>
+                </div></div>
+                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                    <div class="card-front"><div class="icon">🌐</div><h3>Digital Reality</h3><div class="lang-cn">3D 扫描与打印</div></div>
+                    <div class="card-back"><h4>Manufacturing</h4><div class="info-group"><h5>Inquiry / 探究</h5><p>Witness 3D scanning and additive manufacturing turning data into physical matter. <span class="cn-text">介绍从数字模型到实物的增材制造过程。</span></p></div></div>
+                </div></div>
+                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                    <div class="card-front"><div class="icon">🎮</div><h3>Game Design</h3><div class="lang-cn">游戏编程</div></div>
+                    <div class="card-back"><h4>Coding logic</h4><div class="info-group"><h5>Inquiry / 探究</h5><p>Master the logic and sequencing behind interactive HTML game coding. <span class="cn-text">掌握基础编程逻辑，通过代码创建互动游戏。</span></p></div></div>
+                </div></div>
+                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                    <div class="card-front"><div class="icon">⚡</div><h3>Precision Cutting</h3><div class="lang-cn">激光切割演示</div></div>
+                    <div class="card-back"><h4>Laser Tech</h4><div class="info-group"><h5>Inquiry / 探究</h5><p>See high-speed laser technology engrave designs with pinpoint accuracy. <span class="cn-text">展示在安全参数下进行精确切割和雕刻的数字化流程。</span></p></div></div>
+                </div></div>
+            </div>
+        </section>
+
+        <section>
+            <div class="sector-header eng-h"><h2>⚙️ ENGINEERING SECTOR / 工程区</h2></div>
+            <div class="card-grid">
+                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                    <div class="card-front"><div class="icon">🏗️</div><h3>VEX IQ Dynamics</h3><div class="lang-cn">VEX IQ 机器人</div></div>
+                    <div class="card-back"><h4>Navigation</h4><div class="info-group"><h5>Inquiry / 探究</h5><p>High-performance robots tackling complex lifting and navigation tasks. <span class="cn-text">展示核心机械结构，完成抬升、推动及赛道导航任务。</span></p></div></div>
+                </div></div>
+                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                    <div class="card-front"><div class="icon">🚀</div><h3>Aero-Physics</h3><div class="lang-cn">悬浮赛车</div></div>
+                    <div class="card-back"><h4>Fluid Dynamics</h4><div class="info-group"><h5>Inquiry / 探究</h5><p>Defy friction and explore air pressure with high-speed hovercraft racing. <span class="cn-text">探索空气压力与摩擦力，了解减小摩擦如何让运动更顺畅。</span></p></div></div>
+                </div></div>
+                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                    <div class="card-front"><div class="icon">🛠️</div><h3>Applied Engineering</h3><div class="lang-cn">应用工程</div></div>
+                    <div class="card-back"><h4>Mechanics</h4><div class="info-group"><h5>Inquiry / 探究</h5><p>From heat-press T-shirt engineering to mechanical balance and stability. <span class="cn-text">体验 T 恤热转印技术，研究机械系统的平衡与运动。</span></p></div></div>
+                </div></div>
+            </div>
+        </section>
+
+        <section>
+            <div class="sector-header mat-h"><h2>➗ MATHEMATICS SECTOR / 数学区</h2></div>
+            <div class="card-grid">
+                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                    <div class="card-front"><div class="icon">🎲</div><h3>Probability Labs</h3><div class="lang-cn">弹珠轨道概率挑战</div></div>
+                    <div class="card-back"><h4>Statistics</h4><div class="info-group"><h5>Inquiry / 探究</h5><p>Predict the unpredictable with the Marble Run Probability Challenge. <span class="cn-text">通过重复实验探究可能性与概率的奥秘。</span></p></div></div>
+                </div></div>
+                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                    <div class="card-front"><div class="icon">🧠</div><h3>Strategic Logic</h3><div class="lang-cn">数学游戏</div></div>
+                    <div class="card-back"><h4>Tactical Play</h4><div class="info-group"><h5>Inquiry / 探究</h5><p>Master the math behind the games through calculation and tactical play. <span class="cn-text">在策略与计算中巩固数感，感受数学与日常决定的联系。</span></p></div></div>
+                </div></div>
+            </div>
+        </section>
+
+        <section class="uoi-panel">
+            <h2 style="font-family: 'Orbitron'; font-size: 2.2rem; color: #fff;">🌐 UOI BILINGUAL ZONE / 探究单元展示区</h2>
+            <p style="font-size: 1.2rem; color: var(--tech); margin: 15px 0;">Bilingual Inquiry | Transdisciplinary Action | Real-World Solutions</p>
+            <p style="max-width: 900px; margin: 0 auto; line-height: 1.8; color: #ccc;">
+                Witness how STEM concepts emerge naturally through student-led inquiry cycles and bilingual research presentations.
+                <br><span style="color: #bbb;">学生在此用中英双语展示完整的探究历程，展示 STEM 思维如何自然融入探究单元。</span>
+            </p>
+        </section>
+    </div>
+
+    <footer>
+        <div class="footer-date">DECEMBER 31st</div>
+        <p style="letter-spacing: 5px; color: #444; font-size: 0.9rem; margin-top: 15px;">CANADIAN FOREIGN LANGUAGE SCHOOL</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        function setupCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        setupCanvas();
+        window.addEventListener('resize', setupCanvas);
+
+        const letters = "01010101ABCDEFGHIJKLMNOPQRSTUVWXYZ$+-*/=%".split("");
+        const fontSize = window.innerWidth < 600 ? 14 : 18;
+        const columns = canvas.width / fontSize;
+        const drops = Array.from({ length: columns }, () => 1);
+
+        function draw() {
+            ctx.fillStyle = "rgba(1, 1, 3, 0.12)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "#00FF41"; 
+            ctx.font = fontSize + "px 'Courier New'";
+
+            drops.forEach((y, i) => {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, y * fontSize);
+                if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            });
+        }
+        setInterval(draw, 33);
+    </script>
+</body>
+</html>
