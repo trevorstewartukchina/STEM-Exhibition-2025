@@ -16,7 +16,7 @@
             color: #e0e0e0; font-family: 'Rajdhani', sans-serif; overflow-x: hidden;
         }
 
-        /* 矩阵背景效果 */
+        /* Matrix Background Effect */
         #matrix-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1; opacity: 0.6;
@@ -63,13 +63,15 @@
             gap: 25px;
         }
 
-        .card { height: 400px; perspective: 1200px; cursor: pointer; }
+        /* Hover-only flip logic */
+        .card { height: 400px; perspective: 1200px; }
         .card-inner {
             position: relative; width: 100%; height: 100%;
-            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             transform-style: preserve-3d;
         }
-        .card:hover .card-inner, .card.active .card-inner { transform: rotateY(180deg); }
+        /* Flips on hover, flips back when mouse leaves */
+        .card:hover .card-inner { transform: rotateY(180deg); }
 
         .card-front, .card-back {
             position: absolute; width: 100%; height: 100%;
@@ -123,19 +125,19 @@
         <section>
             <div class="sector-header sci-h"><h2>🚀 SCIENCE SECTOR / 科学展示区</h2></div>
             <div class="card-grid">
-                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                <div class="card"><div class="card-inner">
                     <div class="card-front"><div class="icon">🪐</div><h3>Space Expo</h3><div class="lang-cn">太空小展览</div></div>
                     <div class="card-back"><h4>Details</h4><p>Journey into human habitats and life-support systems for the stars.<span class="cn-desc">探究人在太空中生存所需的居住舱、供氧系统和食物循环。</span></p></div>
                 </div></div>
-                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                <div class="card"><div class="card-inner">
                     <div class="card-front"><div class="icon">🌋</div><h3>Geological Power</h3><div class="lang-cn">火山模型</div></div>
                     <div class="card-back"><h4>Details</h4><p>Experience the chemical force of volcanic eruptions through reactive modeling.<span class="cn-desc">展示化学反应如何模拟火山爆发，理解其与地质活动的联系。</span></p></div>
                 </div></div>
-                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                <div class="card"><div class="card-inner">
                     <div class="card-front"><div class="icon">🔬</div><h3>The Micro-Verse</h3><div class="lang-cn">显微镜观察</div></div>
                     <div class="card-back"><h4>Details</h4><p>Peer through high-powered lenses to see structures invisible to the naked eye.<span class="cn-desc">探索微观结构，发现肉眼看不见的奥秘。</span></p></div>
                 </div></div>
-                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                <div class="card"><div class="card-inner">
                     <div class="card-front"><div class="icon">🌵</div><h3>Sustainable Survival</h3><div class="lang-cn">沙漠小镇模型</div></div>
                     <div class="card-back"><h4>Details</h4><p>Discover how science powers desert communities in extreme climates.<span class="cn-desc">研究社区如何在极端沙漠环境中通过科学手段实现可持续生活。</span></p></div>
                 </div></div>
@@ -145,19 +147,19 @@
         <section>
             <div class="sector-header tec-h"><h2>💻 TECHNOLOGY SECTOR / 技术展示区</h2></div>
             <div class="card-grid">
-                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                <div class="card"><div class="card-inner">
                     <div class="card-front"><div class="icon">🤖</div><h3>AI & Robotics</h3><div class="lang-cn">人工智能机器人</div></div>
                     <div class="card-back"><h4>Details</h4><p>Interact with robotic dogs, autonomous miners, and smart claw machines.<span class="cn-desc">与机器狗、星际矿工及智能抓取设备进行互动。</span></p></div>
                 </div></div>
-                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                <div class="card"><div class="card-inner">
                     <div class="card-front"><div class="icon">🖨️</div><h3>Digital Reality</h3><div class="lang-cn">3D 扫描与打印</div></div>
                     <div class="card-back"><h4>Details</h4><p>Witness 3D scanning and additive manufacturing turning data into physical matter.<span class="cn-desc">介绍从数字模型到实物的制造过程。</span></p></div>
                 </div></div>
-                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                <div class="card"><div class="card-inner">
                     <div class="card-front"><div class="icon">🎮</div><h3>Game Design</h3><div class="lang-cn">游戏编程</div></div>
                     <div class="card-back"><h4>Details</h4><p>Master the logic and sequencing behind interactive HTML game coding.<span class="cn-desc">掌握基础编程逻辑，通过代码创建互动游戏。</span></p></div>
                 </div></div>
-                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                <div class="card"><div class="card-inner">
                     <div class="card-front"><div class="icon">⚡</div><h3>Precision Cutting</h3><div class="lang-cn">激光切割演示</div></div>
                     <div class="card-back"><h4>Details</h4><p>See high-speed laser technology engrave designs with pinpoint accuracy.<span class="cn-desc">展示在安全参数下进行精确切割和雕刻的数字化流程。</span></p></div>
                 </div></div>
@@ -167,17 +169,17 @@
         <section>
             <div class="sector-header eng-h"><h2>⚙️ ENGINEERING SECTOR / 工程展示区</h2></div>
             <div class="card-grid">
-                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                <div class="card"><div class="card-inner">
                     <div class="card-front"><div class="icon">🏗️</div><h3>VEX IQ Dynamics</h3><div class="lang-cn">VEX IQ 机器人</div></div>
                     <div class="card-back"><h4>Details</h4><p>High-performance robots tackling complex lifting and navigation tasks.<span class="cn-desc">展示核心机械结构，完成抬升、推动及赛道导航任务。</span></p></div>
                 </div></div>
-                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                <div class="card"><div class="card-inner">
                     <div class="card-front"><div class="icon">🏎️</div><h3>Aero-Physics</h3><div class="lang-cn">悬浮赛车</div></div>
                     <div class="card-back"><h4>Details</h4><p>Defy friction and explore air pressure with high-speed hovercraft racing.<span class="cn-desc">探索空气压力与摩擦力，了解减小摩擦如何让运动更顺畅。</span></p></div>
                 </div></div>
-                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
-                    <div class="card-front"><div class="icon">🛠️</div><h3>Applied Engineering</h3><div class="lang-cn">应用工程</div></div>
-                    <div class="card-back"><h4>Details</h4><p>From heat-press T-shirt engineering to mechanical balance and stability.<span class="cn-desc">体验 T 恤热转印技术，研究机械系统的平衡与运动。</span></p></div>
+                <div class="card"><div class="card-inner">
+                    <div class="card-front"><div class="icon">💨</div><h3>Pneumatic Propulsion</h3><div class="lang-cn">气动推进</div></div>
+                    <div class="card-back"><h4>Details</h4><p>From air pressure mastery to the dynamic power of linear momentum.<span class="cn-desc">掌握气压原理，探索线动量的动态力量。</span></p></div>
                 </div></div>
             </div>
         </section>
@@ -185,11 +187,11 @@
         <section>
             <div class="sector-header mat-h"><h2>➗ MATHEMATICS SECTOR / 数学展示区</h2></div>
             <div class="card-grid">
-                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                <div class="card"><div class="card-inner">
                     <div class="card-front"><div class="icon">🎲</div><h3>Probability Labs</h3><div class="lang-cn">弹珠轨道概率挑战</div></div>
                     <div class="card-back"><h4>Details</h4><p>Predict the unpredictable with the Marble Run Probability Challenge.<span class="cn-desc">通过重复实验探究可能性与概率的奥秘。</span></p></div>
                 </div></div>
-                <div class="card" onclick="this.classList.toggle('active')"><div class="card-inner">
+                <div class="card"><div class="card-inner">
                     <div class="card-front"><div class="icon">♟️</div><h3>Strategic Logic</h3><div class="lang-cn">数学游戏</div></div>
                     <div class="card-back"><h4>Details</h4><p>Master the math behind the games through calculation and tactical play.<span class="cn-desc">在策略与计算中巩固数感，感受数学与日常决定的联系。</span></p></div>
                 </div></div>
