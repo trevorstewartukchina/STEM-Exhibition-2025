@@ -1,238 +1,215 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en-GB">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CLS STEM EXHIBITION: BEYOND THE HORIZON</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <title>CLS Admissions | Master Assessment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&family=Outfit:wght@900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --science: #39FF14; --tech: #00F3FF; --eng: #FF9D00; --math: #FFFF33;
-            --uoi: #FF00FF; --bg-dark: #010103;
+        :root { --cls-red: #ff3e3e; --neon-blue: #00f2ff; --neon-green: #39ff14; --glass: rgba(10, 15, 30, 0.98); --gold: #ffd700; }
+        body, html { margin: 0; padding: 0; height: 100vh; width: 100%; font-family: 'Fredoka', sans-serif; background: #010208; color: white; overflow: hidden; }
+        #canvas { position: fixed; top: 0; left: 0; z-index: -1; }
+
+        /* REBUILT HEADER & SVG LOGO */
+        .global-header { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 90px; 
+            background: #000; border-bottom: 3px solid var(--cls-red);
+            display: flex; align-items: center; justify-content: center; z-index: 10000;
         }
+        .logo-box { display: flex; align-items: center; gap: 12px; }
+        .cls-logo-svg { width: 55px; height: 55px; filter: drop-shadow(0 0 10px var(--cls-red)); }
 
-        body, html {
-            margin: 0; padding: 0; background-color: var(--bg-dark);
-            color: #e0e0e0; font-family: 'Rajdhani', sans-serif; overflow-x: hidden;
-        }
-
-        /* Matrix Background Effect */
-        #matrix-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; opacity: 0.6;
-        }
-
-        .header {
-            display: flex; flex-direction: column; align-items: center;
-            padding: 40px 15px; background: rgba(0, 0, 0, 0.9);
-            border-bottom: 4px solid var(--tech); backdrop-filter: blur(15px);
-            text-align: center;
-        }
-
-        .cls-logo {
-            height: 100px; margin-bottom: 20px;
-            filter: drop-shadow(0 0 15px var(--tech));
-        }
-
-        .title-block h1 {
-            font-family: 'Orbitron', sans-serif; font-size: 2.5rem;
-            margin: 0; letter-spacing: 4px; color: var(--tech);
-            text-shadow: 0 0 20px var(--tech);
-        }
-
-        .subtitle {
-            letter-spacing: 2px; color: #aaa; margin-top: 15px; font-size: 1.2rem;
-        }
-
-        .container { width: 94%; max-width: 1400px; margin: 0 auto; padding: 20px 0; }
-
-        .sector-header {
-            margin: 60px 0 30px 0; padding: 20px;
-            background: rgba(255, 255, 255, 0.05); border-left: 10px solid;
-            border-radius: 0 20px 20px 0; backdrop-filter: blur(10px);
-        }
-        .sector-header h2 { font-size: 1.8rem; margin: 0; font-family: 'Orbitron'; letter-spacing: 2px; }
-        .sci-h { border-color: var(--science); color: var(--science); }
-        .tec-h { border-color: var(--tech); color: var(--tech); }
-        .eng-h { border-color: var(--eng); color: var(--eng); }
-        .mat-h { border-color: var(--math); color: var(--math); }
-
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 25px;
-        }
-
-        /* Hover-only flip logic */
-        .card { height: 400px; perspective: 1200px; }
-        .card-inner {
-            position: relative; width: 100%; height: 100%;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-style: preserve-3d;
-        }
-        /* Flips on hover, flips back when mouse leaves */
-        .card:hover .card-inner { transform: rotateY(180deg); }
-
-        .card-front, .card-back {
-            position: absolute; width: 100%; height: 100%;
-            backface-visibility: hidden; border-radius: 25px;
-            padding: 30px; box-sizing: border-box;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            background: rgba(15, 15, 35, 0.9); backdrop-filter: blur(20px);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-        }
-
-        .card-back { transform: rotateY(180deg); align-items: flex-start; text-align: left; background: rgba(5, 5, 10, 0.95); }
+        .app-container { display: flex; height: 100vh; padding-top: 90px; box-sizing: border-box; }
         
-        .icon { font-size: 4rem; margin-bottom: 15px; }
-        .card-front h3 { font-family: 'Orbitron'; font-size: 1.4rem; margin: 5px 0; text-align: center; color: #fff; }
-        .lang-cn { font-size: 1.1rem; color: var(--tech); margin-top: 10px; font-weight: bold; }
+        /* STUDENT INTERFACE */
+        .student-stage { flex: 2; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; border-right: 2px solid var(--neon-blue); }
+        .slide { display: none; width: 95%; text-align: center; }
+        .slide.active { display: block; }
+        
+        .pilot-label { background: var(--neon-green); color: black; padding: 5px 15px; border-radius: 20px; font-weight: 900; margin-bottom: 20px; display: inline-block; font-size: 0.8rem; text-transform: uppercase; }
+        .logic-box { background: rgba(0,0,0,0.8); padding: 25px; border-radius: 30px; border: 2px dashed var(--neon-blue); width: 100%; max-width: 550px; margin: 0 auto; position: relative; }
 
-        .card-back h4 { color: var(--tech); font-family: 'Orbitron'; border-bottom: 1px solid #444; width: 100%; margin-bottom: 15px; padding-bottom: 10px; font-size: 1.1rem; }
-        .info-group p { font-size: 1rem; line-height: 1.5; color: #ddd; margin: 8px 0; }
-        .cn-desc { font-size: 0.95rem; color: #888; display: block; margin-top: 10px; border-top: 1px solid #222; padding-top: 10px; }
-
-        .uoi-panel {
-            background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 243, 255, 0.1));
-            border: 2px solid var(--uoi); border-radius: 30px;
-            padding: 50px 30px; text-align: center; margin: 80px 0;
+        /* BALLOON SYSTEM */
+        .balloon-pit { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; min-height: 120px; align-items: flex-end; }
+        .balloon { 
+            width: 50px; height: 65px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            cursor: pointer; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s; position: relative;
+            box-shadow: inset -5px -5px 15px rgba(0,0,0,0.3);
         }
-        .uoi-panel h2 { font-family: 'Orbitron'; font-size: 2.2rem; color: #fff; margin-bottom: 20px; }
-        .uoi-tags { color: var(--tech); font-weight: bold; font-size: 1.3rem; margin-bottom: 20px; }
+        .balloon:active { transform: scale(0); opacity: 0; pointer-events: none; }
 
-        footer { padding: 60px 0; text-align: center; background: #000; border-top: 1px solid #222; opacity: 0.6; }
+        /* TEACHER HUD - UNIQUE BUTTONS */
+        .teacher-hud { flex: 1.3; background: var(--glass); padding: 10px; overflow-y: auto; border-left: 1px solid #333; }
+        .hud-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+        .student-card { background: rgba(255,255,255,0.05); padding: 8px; border-radius: 10px; border-top: 4px solid #444; text-align: center; }
+        .phase-block { margin-top: 10px; border-top: 1px solid #222; padding-top: 5px; }
+        .phase-name { font-size: 0.55rem; color: var(--neon-blue); font-weight: 900; text-transform: uppercase; }
+        
+        .btn-pair { display: flex; gap: 2px; margin-top: 3px; }
+        .score-btn { flex: 1; font-size: 0.5rem; padding: 6px 0; border: none; cursor: pointer; background: #222; color: #555; font-weight: 900; border-radius: 4px; }
+        .score-btn.yes.active { background: var(--neon-green) !important; color: #000 !important; box-shadow: 0 0 10px var(--neon-green); }
+        .score-btn.no.active { background: var(--cls-red) !important; color: #fff !important; box-shadow: 0 0 10px var(--cls-red); }
 
-        @media (max-width: 600px) {
-            .title-block h1 { font-size: 1.8rem; }
-            .subtitle { font-size: 1rem; }
+        .btn-action { padding: 15px 30px; border-radius: 40px; border: none; font-weight: 900; cursor: pointer; background: var(--neon-blue); color: black; margin-top: 20px; }
+
+        @media print {
+            .teacher-hud, .btn-action, #canvas, .pilot-label { display: none !important; }
+            body { background: white !important; color: black !important; overflow: visible !important; }
+            .global-header { position: relative !important; border-bottom: 4px solid black !important; background: white !important; }
+            .app-container { padding-top: 0 !important; display: block !important; }
+            .slide { display: block !important; page-break-after: always; }
         }
     </style>
 </head>
 <body>
 
-    <canvas id="matrix-canvas"></canvas>
+<canvas id="canvas"></canvas>
+<audio id="spaceMusic" loop><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg"></audio>
 
-    <header class="header">
-        <img src="CLS-Logo-2.png" class="cls-logo" alt="CLS Logo">
-        <div class="title-block">
-            <h1>CLS STEM EXHIBITION: BEYOND THE HORIZON</h1>
-            <div class="subtitle">Where Inquiry Meets Innovation / 探究与创新的碰撞</div>
+<div class="global-header">
+    <div class="logo-box">
+        <svg class="cls-logo-svg" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="#ff3e3e" stroke="white" stroke-width="4"/>
+            <text x="50" y="65" text-anchor="middle" fill="white" font-family="Outfit" font-weight="900" font-size="35">CLS</text>
+        </svg>
+        <div style="font-family:'Outfit'; font-size: 1.5rem; letter-spacing: 2px;">ADMISSIONS</div>
+    </div>
+</div>
+
+<div class="app-container">
+    <div class="student-stage">
+        <div id="s0" class="slide active">
+            <h1 style="font-family:'Outfit'; font-size: 2.5rem;">ADMISSIONS ENGINE</h1>
+            <p>Register Pilots (separate with commas):</p>
+            <input type="text" id="namesIn" value="Child 1, Child 2, Child 3, Child 4, Child 5" style="width: 320px; padding: 15px; background: #111; color: white; border: 1px solid var(--neon-blue); text-align: center; border-radius: 12px; font-size: 1rem;">
+            <br><button class="btn-action" onclick="launch()">ENGAGE ENGINES 🚀</button>
         </div>
-    </header>
 
-    <div class="container">
+        <div id="s1" class="slide"><div class="pilot-label" id="L1"></div><div class="logic-box"><h2 id="Q1" style="font-size: 2.2rem;"></h2></div><button class="btn-action" style="background:#fff;" onclick="cycle(1)">NEXT QUESTION ➔</button></div>
+        <div id="s2" class="slide"><div class="pilot-label" id="L2"></div><div id="G2" style="display:grid; grid-template-columns: repeat(6, 1fr); gap: 10px;"></div><button class="btn-action" style="background:#fff;" onclick="cycle(2)">REFRESH ➔</button></div>
         
-        <section>
-            <div class="sector-header sci-h"><h2>🚀 SCIENCE SECTOR / 科学展示区</h2></div>
-            <div class="card-grid">
-                <div class="card"><div class="card-inner">
-                    <div class="card-front"><div class="icon">🪐</div><h3>Space Expo</h3><div class="lang-cn">太空小展览</div></div>
-                    <div class="card-back"><h4>Details</h4><p>Journey into human habitats and life-support systems for the stars.<span class="cn-desc">探究人在太空中生存所需的居住舱、供氧系统和食物循环。</span></p></div>
-                </div></div>
-                <div class="card"><div class="card-inner">
-                    <div class="card-front"><div class="icon">🌋</div><h3>Geological Power</h3><div class="lang-cn">火山模型</div></div>
-                    <div class="card-back"><h4>Details</h4><p>Experience the chemical force of volcanic eruptions through reactive modeling.<span class="cn-desc">展示化学反应如何模拟火山爆发，理解其与地质活动的联系。</span></p></div>
-                </div></div>
-                <div class="card"><div class="card-inner">
-                    <div class="card-front"><div class="icon">🔬</div><h3>The Micro-Verse</h3><div class="lang-cn">显微镜观察</div></div>
-                    <div class="card-back"><h4>Details</h4><p>Peer through high-powered lenses to see structures invisible to the naked eye.<span class="cn-desc">探索微观结构，发现肉眼看不见的奥秘。</span></p></div>
-                </div></div>
-                <div class="card"><div class="card-inner">
-                    <div class="card-front"><div class="icon">🌵</div><h3>Sustainable Survival</h3><div class="lang-cn">沙漠小镇模型</div></div>
-                    <div class="card-back"><h4>Details</h4><p>Discover how science powers desert communities in extreme climates.<span class="cn-desc">研究社区如何在极端沙漠环境中通过科学手段实现可持续生活。</span></p></div>
-                </div></div>
-            </div>
-        </section>
+        <div id="s3" class="slide">
+            <div class="pilot-label" id="L3">Pilot</div>
+            <h2 id="targetHeading" style="margin-bottom:15px; font-size: 2.5rem; color: var(--neon-blue);">Find the Aa's!</h2>
+            <div id="letterGrid" style="display:grid; grid-template-columns: repeat(6, 1fr); gap: 10px; background:rgba(255,255,255,0.05); padding:20px; border-radius:20px;"></div>
+            <button class="btn-action" style="background:#fff;" onclick="cycle(3)">NEW TARGET ➔</button>
+        </div>
 
-        <section>
-            <div class="sector-header tec-h"><h2>💻 TECHNOLOGY SECTOR / 技术展示区</h2></div>
-            <div class="card-grid">
-                <div class="card"><div class="card-inner">
-                    <div class="card-front"><div class="icon">🤖</div><h3>AI & Robotics</h3><div class="lang-cn">人工智能机器人</div></div>
-                    <div class="card-back"><h4>Details</h4><p>Interact with robotic dogs, autonomous miners, and smart claw machines.<span class="cn-desc">与机器狗、星际矿工及智能抓取设备进行互动。</span></p></div>
-                </div></div>
-                <div class="card"><div class="card-inner">
-                    <div class="card-front"><div class="icon">🖨️</div><h3>Digital Reality</h3><div class="lang-cn">3D 扫描与打印</div></div>
-                    <div class="card-back"><h4>Details</h4><p>Witness 3D scanning and additive manufacturing turning data into physical matter.<span class="cn-desc">介绍从数字模型到实物的制造过程。</span></p></div>
-                </div></div>
-                <div class="card"><div class="card-inner">
-                    <div class="card-front"><div class="icon">🎮</div><h3>Game Design</h3><div class="lang-cn">游戏编程</div></div>
-                    <div class="card-back"><h4>Details</h4><p>Master the logic and sequencing behind interactive HTML game coding.<span class="cn-desc">掌握基础编程逻辑，通过代码创建互动游戏。</span></p></div>
-                </div></div>
-                <div class="card"><div class="card-inner">
-                    <div class="card-front"><div class="icon">⚡</div><h3>Precision Cutting</h3><div class="lang-cn">激光切割演示</div></div>
-                    <div class="card-back"><h4>Details</h4><p>See high-speed laser technology engrave designs with pinpoint accuracy.<span class="cn-desc">展示在安全参数下进行精确切割和雕刻的数字化流程。</span></p></div>
-                </div></div>
-            </div>
-        </section>
+        <div id="s4" class="slide"><div class="pilot-label" id="L4"></div><div class="logic-box"><h1 id="Q4" style="font-size:5rem;"></h1><p>What comes next?</p></div><button class="btn-action" style="background:#fff;" onclick="cycle(4)">NEXT ➔</button></div>
 
-        <section>
-            <div class="sector-header eng-h"><h2>⚙️ ENGINEERING SECTOR / 工程展示区</h2></div>
-            <div class="card-grid">
-                <div class="card"><div class="card-inner">
-                    <div class="card-front"><div class="icon">🏗️</div><h3>VEX IQ Dynamics</h3><div class="lang-cn">VEX IQ 机器人</div></div>
-                    <div class="card-back"><h4>Details</h4><p>High-performance robots tackling complex lifting and navigation tasks.<span class="cn-desc">展示核心机械结构，完成抬升、推动及赛道导航任务。</span></p></div>
-                </div></div>
-                <div class="card"><div class="card-inner">
-                    <div class="card-front"><div class="icon">🏎️</div><h3>Aero-Physics</h3><div class="lang-cn">悬浮赛车</div></div>
-                    <div class="card-back"><h4>Details</h4><p>Defy friction and explore air pressure with high-speed hovercraft racing.<span class="cn-desc">探索空气压力与摩擦力，了解减小摩擦如何让运动更顺畅。</span></p></div>
-                </div></div>
-                <div class="card"><div class="card-inner">
-                    <div class="card-front"><div class="icon">💨</div><h3>Pneumatic Propulsion</h3><div class="lang-cn">气动推进</div></div>
-                    <div class="card-back"><h4>Details</h4><p>From air pressure mastery to the dynamic power of linear momentum.<span class="cn-desc">掌握气压原理，探索线动量的动态力量。</span></p></div>
-                </div></div>
+        <div id="s5" class="slide">
+            <div class="pilot-label" id="L5">Pilot</div>
+            <div class="logic-box">
+                <div class="balloon-pit" id="balloonPit"></div>
+                <h2 id="colorTask" style="color:var(--neon-blue); font-size: 2rem;">"Pop the Red Balloon!"</h2>
             </div>
-        </section>
+            <button class="btn-action" style="background:#fff;" onclick="cycle(5)">NEXT COLOR ➔</button>
+        </div>
+        
+        <div id="s6" class="slide">
+            <h1 style="font-family:'Outfit'; color:var(--neon-green);">ASSESSMENT COMPLETE</h1>
+            <button class="btn-action" onclick="window.print()" style="background:#fff; color:#000;">PRINT REPORT 🖨️</button>
+            <div id="finalReport" style="margin-top:20px;"></div>
+        </div>
 
-        <section>
-            <div class="sector-header mat-h"><h2>➗ MATHEMATICS SECTOR / 数学展示区</h2></div>
-            <div class="card-grid">
-                <div class="card"><div class="card-inner">
-                    <div class="card-front"><div class="icon">🎲</div><h3>Probability Labs</h3><div class="lang-cn">弹珠轨道概率挑战</div></div>
-                    <div class="card-back"><h4>Details</h4><p>Predict the unpredictable with the Marble Run Probability Challenge.<span class="cn-desc">通过重复实验探究可能性与概率的奥秘。</span></p></div>
-                </div></div>
-                <div class="card"><div class="card-inner">
-                    <div class="card-front"><div class="icon">♟️</div><h3>Strategic Logic</h3><div class="lang-cn">数学游戏</div></div>
-                    <div class="card-back"><h4>Details</h4><p>Master the math behind the games through calculation and tactical play.<span class="cn-desc">在策略与计算中巩固数感，感受数学与日常决定的联系。</span></p></div>
-                </div></div>
-            </div>
-        </section>
-
-        <section class="uoi-panel">
-            <h2>🌍 UOI BILINGUAL ZONE / 探究单元展示区</h2>
-            <div class="uoi-tags">Bilingual Inquiry | Transdisciplinary Action | Real-World Solutions</div>
-            <div class="uoi-tags" style="color:#fff; font-size: 1.1rem;">双语探究 | 跨学科行动 | 解决真实问题</div>
-            <p style="margin-top: 30px; font-size: 1.2rem; line-height: 1.6; color: #ccc;">
-                Witness how STEM concepts emerge naturally through student-led inquiry cycles and bilingual research presentations.
-                <br>
-                <span style="color: var(--uoi); display: block; margin-top: 15px;">学生在此用中英双语展示完整的探究历程，展示 STEM 思维如何自然融入探究单元。</span>
-            </p>
-        </section>
+        <div id="nav" style="display:none; margin-top: 25px;">
+            <button class="btn-action" style="background:#222; color:#fff;" onclick="move(-1)">PREVIOUS</button>
+            <button class="btn-action" onclick="move(1)">NEXT PHASE</button>
+        </div>
     </div>
 
-    <footer>
-        <p style="letter-spacing: 5px; color: #666; font-size: 0.9rem;">CANADIAN FOREIGN LANGUAGE SCHOOL - STEM 2025</p>
-    </footer>
+    <div class="teacher-hud">
+        <h3 style="text-align:center; color:var(--cls-red); font-size:0.8rem;">TEACHER COMMAND HUB</h3>
+        <div class="hud-grid" id="hudGrid"></div>
+    </div>
+</div>
 
-    <script>
-        const canvas = document.getElementById('matrix-canvas');
-        const ctx = canvas.getContext('2d');
-        function setSize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        setSize(); window.addEventListener('resize', setSize);
-        const letters = "01010101ABCDEFGHIJKLMNOPQRSTUVWXYZ$+-*/=%".split("");
-        const fontSize = 16; const columns = canvas.width / fontSize;
-        const drops = Array.from({ length: columns }, () => 1);
-        function draw() {
-            ctx.fillStyle = "rgba(1, 1, 3, 0.1)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#00FF41"; ctx.font = fontSize + "px 'Courier New'";
-            drops.forEach((y, i) => {
-                const text = letters[Math.floor(Math.random() * letters.length)];
-                ctx.fillText(text, i * fontSize, y * fontSize);
-                if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            });
-        }
-        setInterval(draw, 35);
-    </script>
+<script>
+    let pilots = [], cur = 0, scores = [{},{},{},{},{}], subIdx = [0,0,0,0,0,0];
+    const comms = ["What's your name?", "How old are you?", "How are you today?", "Favorite animal?", "Favorite toy?"];
+    const targets = ["Aa", "Bb", "Mm", "Ss", "Cc"];
+    const colors = ["Red", "Blue", "Green", "Yellow", "Pink", "Purple", "Orange"];
+    const logic = ["1 2 3 ?", "A B A ?", "🍎 🍌 🍎 ?", "2 4 6 ?", "🔴 🔵 🔴 ?"];
+
+    function launch() {
+        pilots = document.getElementById('namesIn').value.split(',').map(n => n.trim());
+        document.getElementById('spaceMusic').play();
+        document.getElementById('nav').style.display = 'block';
+        renderHud(); refreshUI(); move(1);
+    }
+
+    function renderHud() {
+        const keys = ['c','p','v','l','k'], tags = ['Comms', 'Phonics', 'Visual', 'Logic', 'Colours'];
+        document.getElementById('hudGrid').innerHTML = pilots.slice(0,5).map((p, sIdx) => `
+            <div class="student-card">
+                <div style="font-size: 0.6rem; font-weight:900; color:var(--neon-blue);">${p}</div>
+                <div id="p${sIdx}" style="font-size: 1rem; color:var(--gold); font-weight:900;">0%</div>
+                ${keys.map((k, i) => `
+                    <div class="phase-block">
+                        <div class="phase-name">${tags[i]}</div>
+                        <div class="btn-pair">
+                            <button id="y-${sIdx}-${k}" class="score-btn yes" onclick="setScore(${sIdx},'${k}',true)">YES</button>
+                            <button id="n-${sIdx}-${k}" class="score-btn no" onclick="setScore(${sIdx},'${k}',false)">NO</button>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `).join('');
+    }
+
+    function setScore(sIdx, ph, val) {
+        scores[sIdx][ph] = val;
+        document.getElementById(`y-${sIdx}-${ph}`).classList.remove('active');
+        document.getElementById(`n-${sIdx}-${ph}`).classList.remove('active');
+        document.getElementById(`${val?'y':'n'}-${sIdx}-${ph}`).classList.add('active');
+        let count = 0; ['c','p','v','l','k'].forEach(k => { if(scores[sIdx][k] === true) count++; });
+        document.getElementById(`p${sIdx}`).innerText = (count * 20) + "%";
+    }
+
+    function move(d) {
+        document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+        cur += d;
+        if(document.getElementById('s'+cur)) document.getElementById('s'+cur).classList.add('active');
+        if(cur === 6) showFinal();
+    }
+
+    function cycle(p) { subIdx[p] = (subIdx[p]+1)%5; refreshUI(); }
+
+    function refreshUI() {
+        document.getElementById('L1').innerText = pilots[subIdx[1]]; document.getElementById('Q1').innerText = `"${comms[subIdx[1]]}"`;
+        document.getElementById('L2').innerText = pilots[subIdx[2]]; document.getElementById('G2').innerHTML = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('').sort(()=>.5-Math.random()).slice(0,18).map(l => `<div style="background:white; color:black; padding:12px; font-weight:bold; border-radius:8px;">${l}</div>`).join('');
+        
+        // Phonics Fix
+        const t = targets[subIdx[3]];
+        document.getElementById('L3').innerText = pilots[subIdx[3]];
+        document.getElementById('targetHeading').innerText = `Find the ${t}'s!`;
+        document.getElementById('letterGrid').innerHTML = Array(24).fill(0).map(()=>`<div style="background:white; color:black; padding:10px; border-radius:8px; font-weight:bold;">${targets[Math.floor(Math.random()*5)]}</div>`).join('');
+        
+        document.getElementById('L4').innerText = pilots[subIdx[4]]; document.getElementById('Q4').innerText = logic[subIdx[4]];
+        
+        // Balloons Fix
+        document.getElementById('L5').innerText = pilots[subIdx[5]];
+        const tCol = colors[subIdx[5]];
+        document.getElementById('colorTask').innerText = `"Pop the ${tCol} balloon!"`;
+        document.getElementById('balloonPit').innerHTML = colors.map(c => `<div class="balloon" style="background:${c.toLowerCase()}" onclick="this.style.transform='scale(0)';"></div>`).sort(()=>.5-Math.random()).join('');
+    }
+
+    function showFinal() {
+        document.getElementById('finalReport').innerHTML = pilots.slice(0,5).map((p, i) => {
+            let count = 0; ['c','p','v','l','k'].forEach(k => { if(scores[i][k] === true) count++; });
+            return `<div style="padding:15px; border:2px solid black; margin-bottom:8px; display:flex; justify-content:space-between; background:white; color:black; border-radius:10px;"><b>${p.toUpperCase()}</b> <span>SCORE: ${count*20}%</span></div>`;
+        }).join('');
+    }
+
+    const canvas = document.getElementById('canvas'); const ctx = canvas.getContext('2d');
+    let stars = []; function res() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.onresize = res; res();
+    for(let i=0; i<80; i++) stars.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, s:Math.random()*2});
+    function draw() {
+        ctx.clearRect(0,0,canvas.width, canvas.height); ctx.fillStyle="white";
+        stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill(); s.y+=0.1; if(s.y>canvas.height) s.y=0; });
+        requestAnimationFrame(draw);
+    }
+    draw();
+</script>
 </body>
 </html>
